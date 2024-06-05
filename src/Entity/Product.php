@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource]
 #[ORM\Entity]
@@ -18,10 +19,12 @@ class Product
     
     /** Product name */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $name;
     
     /** Product MPN (Manufacturer Part Number) */
     #[ORM\Column(length: 100)]
+    #[Assert\NotNull]
     private ?string $mpn;
     
     /** Product description */
@@ -92,6 +95,18 @@ class Product
     public function setIssuedAt(DateTimeInterface $issuedAt): static
     {
         $this->issuedAt = $issuedAt;
+        
+        return $this;
+    }
+    
+    public function getManufacturer(): ?Manufacturer
+    {
+        return $this->manufacturer;
+    }
+    
+    public function setManufacturer(?Manufacturer $manufacturer): static
+    {
+        $this->manufacturer = $manufacturer;
         
         return $this;
     }

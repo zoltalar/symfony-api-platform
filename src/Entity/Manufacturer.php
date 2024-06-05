@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource]
 #[ORM\Entity]
@@ -18,6 +20,7 @@ class Manufacturer
     
     /** Manufacturer name */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $name;
     
     /** Manufacturer description */
@@ -26,6 +29,7 @@ class Manufacturer
     
     /** Manufacturer 2 letter country code */
     #[ORM\Column(length: 2)]
+    #[Assert\NotBlank]
     private ?string $countryCode;
     
     /** The date when manufacturer was listed */
@@ -38,6 +42,11 @@ class Manufacturer
         mappedBy: 'manufacturer')
     ]
     private iterable $products;
+    
+    public function __construct() 
+    {
+        $this->products = new ArrayCollection();
+    }
     
     // --------------------------------------------------
     // Getters and Setters
@@ -94,5 +103,10 @@ class Manufacturer
         $this->listedAt = $listedAt;
         
         return $this;
+    }
+    
+    public function getProducts(): iterable
+    {
+        return $this->products;
     }
 }
