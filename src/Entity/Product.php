@@ -8,36 +8,36 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource]
 #[ORM\Entity]
-class Manufacturer 
+class Product
 {
-    /** Manufacturer ID */
+    /** Product ID */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
     
-    /** Manufacturer name */
+    /** Product name */
     #[ORM\Column(length: 255)]
     private ?string $name;
     
-    /** Manufacturer description */
+    /** Product MPN (Manufacturer Part Number) */
+    #[ORM\Column(length: 100)]
+    private ?string $mpn;
+    
+    /** Product description */
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description;
     
-    /** Manufacturer 2 letter country code */
-    #[ORM\Column(length: 2)]
-    private ?string $countryCode;
-    
-    /** The date when manufacturer was listed */
+    /** The date when product was issued */
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?DateTimeInterface $listedAt;
+    private ?DateTimeInterface $issuedAt;
     
-    /** Collection of products */
-    #[ORM\OneToMany(
-        targetEntity: Product::class, 
-        mappedBy: 'manufacturer')
-    ]
-    private iterable $products;
+    /** Manufacturer of the product */
+    #[ORM\ManyToOne(
+        targetEntity: Manufacturer::class, 
+        inversedBy: 'products'
+    )]
+    private ?Manufacturer $manufacturer;
     
     // --------------------------------------------------
     // Getters and Setters
@@ -60,6 +60,18 @@ class Manufacturer
         return $this;
     }
     
+    public function getMpn(): ?string
+    {
+        return $this->mpn;
+    }
+    
+    public function setMpn(?string $mpn): static
+    {
+        $this->mpn = $mpn;
+        
+        return $this;
+    }
+    
     public function getDescription(): ?string
     {
         return $this->description;
@@ -72,26 +84,14 @@ class Manufacturer
         return $this;
     }
     
-    public function getCountryCode(): ?string
+    public function getIssuedAt(): DateTimeInterface
     {
-        return $this->countryCode;
+        return $this->issuedAt;
     }
     
-    public function setCountryCode(?string $countryCode): static
+    public function setIssuedAt(DateTimeInterface $issuedAt): static
     {
-        $this->countryCode = $countryCode;
-        
-        return $this;
-    }
-    
-    public function getListedAt(): DateTimeInterface
-    {
-        return $this->listedAt;
-    }
-    
-    public function setListedAt(DateTimeInterface $listedAt): static
-    {
-        $this->listedAt = $listedAt;
+        $this->issuedAt = $issuedAt;
         
         return $this;
     }
